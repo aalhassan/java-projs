@@ -1,0 +1,107 @@
+package java112.labs2;
+ 
+import java.util.*;
+ 
+/**
+ *  This class demonstrates the use of the TreeMap class. <br>
+ *
+ *
+ *@author     eknapp
+ */
+class TreeMapDemo {
+ 
+    /**
+     *  We are placing all the code into this main method for demonstration
+     *  only! This is not how you would code normally.
+     *
+     *@param  args  Parameters that are entered on the command line.
+     */
+    public static void main(String args[]) {
+ 
+        /**
+         *  Create an instance of the TreeMap class. This class holds a sorted set
+         *  of mapped data. The key can be any object, including a String. The value
+         *  can be any object, including a custom class that you would write.
+         *
+         *  You can declare this variable as type Map or TreeMap like this:
+         *
+         *  Map employees = new TreeMap();
+         *  OR
+         *  TreeMap employees = new TreeMap();
+         *
+         *  Try it! They will both compile and run.
+         *
+         *  What are creating here is a collection of employees. We will use an
+         *  Employee class.
+         */
+        Map       employees  = new TreeMap();
+ 
+        /**
+         *  Now we will add a group of Employee objects to the TreeMap
+         */
+        employees.put("a1234", new Employee("a1234", "Fred", "Jones", 25000.0));
+        employees.put("b3452", new Employee("b3452", "Sally", "Smith", 45000.0));
+        employees.put("f9874", new Employee("f9874", "Bill", "Crandall", 17000.0));
+        employees.put("r2234", new Employee("r2234", "June", "White", 20000.0));
+        employees.put("c4321", new Employee("c4321", "John", "Green", 30000.0));
+        employees.put("u9877", new Employee("u9877", "Jill", "Black", 35000.0));
+        employees.put("w3458", new Employee("w3458", "Jim", "Brown", 25000.0));
+ 
+        //Now we will output the collections
+         
+        displayEmps(employees);
+ 
+        /**
+         *  Now we will add $1,000 to Jill's salary. Notice that we don't have
+         *  to put the emp back into the TreeMap, it is still there and we are
+         *  changing it in place.
+         */
+        Employee  emp        = (Employee) employees.get("u9877");
+        emp.adjustSalary(1000.0);
+ 
+        //And then display the employees again to confirm the salary increase
+         
+        displayEmps(employees);
+ 
+    }
+ 
+ 
+    /**
+     *  This method outputs the employees to the standard output
+     *
+     *@param  employees  The employee TreeMap to be displayed
+     */
+    private static void displayEmps(Map employees) {
+        /**
+         *  We have to convert our TreeMap to a Set in order to iterate over the
+         *  employees. This is very easy to do with the following one line of
+         *  code.
+         */
+        Set       set  = employees.entrySet();
+ 
+        /**
+         *  Now we can obtain in Iterator for our employees
+         */
+        Iterator  i    = set.iterator();
+ 
+        System.out.println("\nEmployee List:");
+ 
+        /**
+         *  Here is where we will loop through the collections and print out each
+         *  employee. In order to do this we have to cast each element of the
+         *  TreeMap to a class that is designed for this purpose, the Map.Entry
+         *  class. This is actually in inner class of the Map interface which is
+         *  why is has the period in it. Once we have an element we can get the
+         *  key and the value. The value here is an Employee object which has a
+         *  toString() method which is called by println().
+         */
+        while (i.hasNext()) {
+            Map.Entry  me  = (Map.Entry) i.next();
+            System.out.print(me.getKey() + ": ");
+            System.out.println(me.getValue());
+        }
+ 
+        System.out.println();
+ 
+    }
+}

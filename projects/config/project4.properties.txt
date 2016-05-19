@@ -1,0 +1,10 @@
+author= Majeed Alhassan
+author.email.address= aalhassan@madisoncollege.edu
+author.session= Mondays 5:30p-9:20p
+course = Java 112: Advanced Java
+session.instructor = Paula Waite 
+project.description = A project to demonstrate the use of JSP and EL
+driver = com.mysql.jdbc.Driver
+url  = jdbc:mysql://localhost/student
+username  = student
+password  = student

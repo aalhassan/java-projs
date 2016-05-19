@@ -1,0 +1,9 @@
+Iceland=Reykjavik
+
+Oman=Muscat
+
+Ukraine=Kiev
+
+Bosnia=Sarajevo
+
+Denmark=Copenhagen

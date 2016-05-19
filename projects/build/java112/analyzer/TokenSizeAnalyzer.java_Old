@@ -1,0 +1,223 @@
+package java112.analyzer;
+import java.io.*;
+import java.util.*;
+
+/**
+ *  This class performs analysis of  tokens sizes in a file. <br>
+ *@since March 24th, 2016
+ *@author     M. Alhassan
+ */
+public class TokenSizeAnalyzer implements Analyzer, Comparator<Map.Entry<Integer, Integer>> {
+    
+    private Map<Integer, Integer> tokenSizes;
+    private Properties properties;
+    private int maximumSize;    
+
+    /**
+     *Default contructor. Instantiates the map of  token  sizes<br>
+     *
+     */
+
+    public TokenSizeAnalyzer () {
+        tokenSizes = new TreeMap<Integer, Integer>();
+    }
+
+     /**
+     *Instantiates the map of  token  sizes with and gets properties <br>
+     *@param properties Loaded properties for object
+     */
+
+    public TokenSizeAnalyzer (Properties properties) {
+        this();      
+        this.properties = properties;                     
+       
+}
+  
+    /**
+     *Getter for map of tokens sizes<br>
+     *
+     *@return map of  tokens sizes counts
+     */
+    public Map<Integer, Integer> getTokenSizes() {
+        return tokenSizes;
+    }
+
+    /**
+     *Getter for maximumSize
+     *@return the maximum size in the keyword map
+     */
+ 
+    public int getMaximumSize() {
+        return maximumSize;
+    }
+    
+     /**
+     *Processes a given token-adds a token size and count to list<br>
+     *
+     *@param token token to be processed     
+     */
+    public void processToken(String token) {        
+        int currentCount;
+        int tokenSize = token.length();
+        Map<Integer, Integer> tokenSizes = getTokenSizes();
+
+        if (tokenSizes.containsKey(tokenSize)) {      
+            currentCount = tokenSizes.get(tokenSize);            
+            tokenSizes.put(tokenSize , ++currentCount); 
+        } else {
+            tokenSizes.put(tokenSize ,1);
+        }   
+    }
+
+     /**
+     *Gets the value of each histogram asterisk from object map
+     *@return Value of each histogram asterisk
+     */
+ 
+    public int getAsterisksValue() {
+        int mapMaxValue = 0; 
+        int maxAsterisks = Integer.parseInt(properties.getProperty("asterisks.maximum.size"));       
+        Map<Integer, Integer> tokenSizes = getTokenSizes();
+        for (Map.Entry<Integer,Integer> entry : tokenSizes.entrySet()) {
+            if (entry.getValue() > mapMaxValue) mapMaxValue = entry.getValue();
+        }         
+        return  mapMaxValue/maxAsterisks;
+    }
+
+    /**
+     *Builds vertical histogram for a given map     
+     *@param map map to build histogram from
+     *@param maxAsterisks Histogram max height
+     *@return the output histogram
+     */
+     public StringBuffer buildVertHistogram (Map<Integer,Integer> map, int maxAsterisks) {
+        StringBuffer vertHist = new StringBuffer("\n"+"VERTICAL HISTOGRAM:\n");
+        int asterisksValue = getAsterisksValue();//value of each asterisk  
+
+        for(int i = maxAsterisks; i >= 0; i--) {
+                for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
+                    if (entry.getValue()/asterisksValue >=i)
+                        vertHist.append("*  ");
+                    else vertHist.append("   ");
+                } 
+                vertHist.append("\n");      
+        }
+
+        vertHist.append("\n");
+        for (Map.Entry<Integer,Integer> entry : map.entrySet()) {                 
+             if (entry.getKey() < 10) vertHist.append(entry.getKey()+"  ");
+             else vertHist.append(entry.getKey()+" ");
+        }
+        return vertHist;     
+    }
+ 
+     /**
+     *Builds a horizontal histogram for a given map    
+     *@param map map to build histogram from
+     *@param maxAsterisks Histogram max width
+     *@return the output histogram
+     */
+    
+     public StringBuffer buildHorzHistogram (Map<Integer,Integer> map, int maxAsterisks) {
+           StringBuffer horzHist = new StringBuffer("\n"+"HORIZONTAL HISTOGRAM:\n");
+           int asterisksValue = getAsterisksValue();//value of each asterisk
+           String asterisks = "";
+  
+           for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
+                for(int i = 0; i <= entry.getValue(); i += asterisksValue ) {
+                    asterisks +="*";
+                }
+                horzHist.append(entry.getKey()+"\t"+asterisks+"\n");
+                asterisks = "";//reset asterisks
+            }
+            return horzHist;
+     }
+
+    /**
+     *Builds string histogram for a given map
+     *@param orientation direction of histogram-vertical or horizontal
+     *@param map map to build histogram from
+     *@return the output histogram
+     */
+
+    public StringBuffer buildHistogram(Map<Integer,Integer> map, String orientation, int maxAsterisks) {
+        StringBuffer histogram = null;     
+        maxAsterisks = Integer.parseInt(properties.getProperty("asterisks.maximum.size")); 
+
+        if (orientation.equals("vertical")) {
+            histogram = buildVertHistogram(map, maxAsterisks);            
+        } else if (orientation.equals("horizontal")) {
+            histogram = buildHorzHistogram(map, maxAsterisks);            
+        }
+        else {
+            histogram = new StringBuffer("Could not print. Please specify histogram orientation:vertical or horizontal");
+        }
+        return histogram;
+    }   
+        
+      /**
+     *Compares an entry in a nap to all other entries for sorting purposes
+     *@param entry entry being compared to
+     *@return 1 if this is greater, -1 if this less than or 0 if this equal to entry
+     */
+      public int compare(Map.Entry<Integer,Integer> entry1, Map.Entry<Integer,Integer> entry2) {
+          
+        if (entry1.getValue() ==entry2.getValue())
+            return 0;
+        else if (entry1.getValue() > entry2.getValue())
+            return 1;
+        else
+            return -1;
+    }
+
+   
+    /* public boolean equal(Map.Entry<Integer,Integer> entry1, Map.Entry<Integer,Integer> entry2) {          
+            return false;
+    } */
+ 
+ 
+    /**
+     *Writes all token sizes(string and histogram) in input file to an output file<br>
+     *
+     *@param inputFilePath File path for file analyzed  
+     */
+    public void writeOutputFile(String inputFilePath) {
+        Map<Integer, Integer> tokenSizes =  getTokenSizes();
+
+        String outputFilePath = properties.getProperty("output.dir") + ""
+                + properties.getProperty("output.file.token.size");
+
+        int maxAsterisks = 80;
+        
+        try {
+        maxEntry = Collections.max(getTokenSizes());
+        this.maximumSize   = maxEntry.getValue();
+        } catch (ClassCastException clEx) {
+            System.out.println("Map contains non mutually comparable elements");
+            clEx.printStackTrace();
+        } catch (NoSuchElementException noSuchEx) {
+            System.out.println("Map is empty");
+            noSuchEx.printStackTrace();
+        } catch (Exception exception) {
+            System.out.println("An exception getting max map value");
+            exception.printStackTrace();
+        }   
+        
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath)))) {
+            for (Map.Entry<Integer,Integer> entry : tokenSizes.entrySet()) {
+                out.println(entry.getKey()+"\t"+entry.getValue());
+            }                  
+            out.println(buildHistogram(tokenSizes, "horizontal", maxAsterisks));          
+            out.println(buildHistogram(tokenSizes,"vertical",  maxAsterisks));     
+        } catch (FileNotFoundException fileNotFoundEx) {
+            System.out.println("File could not be written to");
+            fileNotFoundEx.printStackTrace();
+        } catch (IOException ioEx) {
+            System.out.println("File could not be written to");
+            ioEx.printStackTrace();
+        } catch (Exception exception) {
+            System.out.println("An Exception writing to file");
+            exception.printStackTrace();
+        }  
+    }
+}

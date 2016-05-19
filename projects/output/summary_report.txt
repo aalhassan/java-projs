@@ -1,0 +1,6 @@
+Application: File Analyzer
+Author: Majeed Alhassan, Mondays 5:30p-9:20p
+email: aalhassan@madisoncollege.edu
+Input file: C:\Users\azsupport\EclipseSpace\bigFile.txt
+Analyzed on: Wed May 18 23:01:52 PDT 2016
+Total token count: 6319576

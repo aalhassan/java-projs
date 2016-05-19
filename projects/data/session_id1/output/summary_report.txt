@@ -1,0 +1,6 @@
+Application: File Analyzer
+Author: Majeed Alhassan, Mondays 5:30p-9:20p
+email: aalhassan@madisoncollege.edu
+Input file: C:\Users\azsupport\apache-tomcat-7.0.69\webapps\data\session_id1_bigFile.txt
+Analyzed on: Wed May 11 17:31:00 PDT 2016
+Total token count: 4468588

@@ -1,0 +1,4 @@
+CHANGES                                                         STATUS
+Pull analyzer creations into a method                           Done
+Eliminate targetList parameter  from read method in Lexical
+Tester  Class                                                   Done
